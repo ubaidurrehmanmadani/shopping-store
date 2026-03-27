@@ -18,7 +18,7 @@ class CatalogApiTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonCount(3, 'data')
-            ->assertJsonPath('data.0.slug', 'electronics');
+            ->assertJsonPath('data.0.slug', 'pizza');
     }
 
     public function test_products_endpoint_can_filter_featured_items(): void
@@ -29,6 +29,7 @@ class CatalogApiTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertJsonPath('data.0.sku', 'EL-NOVA-X');
+            ->assertJsonFragment(['sku' => 'BG-DOUBLE-SMASH'])
+            ->assertJsonFragment(['sku' => 'PZ-FIREHOUSE-PEP']);
     }
 }

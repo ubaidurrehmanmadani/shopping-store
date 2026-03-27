@@ -23,47 +23,45 @@ class AdminCatalogApiTest extends TestCase
 
         $createCategoryResponse = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/v1/admin/categories', [
-                'name' => 'Beauty',
-                'description' => 'Skincare and cosmetics.',
+                'name' => 'Wraps',
+                'description' => 'Grilled wraps and handheld fast lunch picks.',
                 'sort_order' => 4,
             ]);
 
         $createCategoryResponse
             ->assertCreated()
-            ->assertJsonPath('data.slug', 'beauty');
+            ->assertJsonPath('data.slug', 'wraps');
 
         $categoryId = $createCategoryResponse->json('data.id');
 
         $createProductResponse = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/v1/admin/products', [
                 'category_id' => $categoryId,
-                'name' => 'Hydra Serum',
-                'sku' => 'BE-HYDRA-SERUM',
+                'name' => 'Spicy Chicken Wrap',
+                'sku' => 'WR-SPICY-CHICKEN',
                 'price' => 39.99,
                 'sale_price' => 29.99,
-                'stock' => 12,
                 'is_featured' => true,
             ]);
 
         $createProductResponse
             ->assertCreated()
-            ->assertJsonPath('data.category.slug', 'beauty');
+            ->assertJsonPath('data.category.slug', 'wraps');
 
         $productId = $createProductResponse->json('data.id');
 
         $this->withHeader('Authorization', 'Bearer '.$token)
             ->putJson("/api/v1/admin/products/{$productId}", [
                 'category_id' => $categoryId,
-                'name' => 'Hydra Serum Plus',
-                'sku' => 'BE-HYDRA-SERUM',
+                'name' => 'Spicy Chicken Wrap Combo',
+                'sku' => 'WR-SPICY-CHICKEN',
                 'price' => 44.99,
                 'sale_price' => 34.99,
-                'stock' => 10,
                 'is_active' => true,
                 'is_featured' => false,
             ])
             ->assertOk()
-            ->assertJsonPath('data.name', 'Hydra Serum Plus');
+            ->assertJsonPath('data.name', 'Spicy Chicken Wrap Combo');
     }
 
     public function test_non_admin_user_cannot_access_admin_catalog_routes(): void

@@ -81,7 +81,6 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'sale_price' => ['nullable', 'numeric', 'min:0', 'lte:price'],
             'currency' => ['sometimes', 'string', 'size:3'],
-            'stock' => ['sometimes', 'integer', 'min:0'],
             'image_url' => ['nullable', 'url', 'max:2048'],
             'is_active' => ['sometimes', 'boolean'],
             'is_featured' => ['sometimes', 'boolean'],
@@ -89,7 +88,7 @@ class ProductController extends Controller
 
         $validated['slug'] = Str::slug($validated['slug'] ?? $validated['name']);
         $validated['currency'] = strtoupper($validated['currency'] ?? 'USD');
-        $validated['stock'] = $validated['stock'] ?? 0;
+        $validated['stock'] = $product?->stock ?? 0;
         $validated['is_active'] = $validated['is_active'] ?? true;
         $validated['is_featured'] = $validated['is_featured'] ?? false;
 

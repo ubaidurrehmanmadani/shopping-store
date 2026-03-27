@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'currency',
     'stock',
     'image_url',
+    'image_path',
     'is_active',
     'is_featured',
 ])]
@@ -43,5 +44,14 @@ class Product extends Model
     public function currentPrice(): string
     {
         return (string) ($this->sale_price ?? $this->price);
+    }
+
+    public function getImageSourceAttribute(): ?string
+    {
+        if ($this->image_path) {
+            return '/storage/'.$this->image_path;
+        }
+
+        return $this->image_url;
     }
 }

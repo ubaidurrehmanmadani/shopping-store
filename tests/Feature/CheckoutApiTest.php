@@ -17,7 +17,7 @@ class CheckoutApiTest extends TestCase
 
         $user = User::factory()->create();
         $token = $user->issueApiToken('galaxy')['access_token'];
-        $product = Product::query()->where('sku', 'EL-NOVA-X')->firstOrFail();
+        $product = Product::query()->where('sku', 'PZ-FIREHOUSE-PEP')->firstOrFail();
 
         $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/v1/cart/items', [
@@ -43,17 +43,13 @@ class CheckoutApiTest extends TestCase
 
         $checkoutResponse
             ->assertCreated()
-            ->assertJsonPath('data.items.0.product_sku', 'EL-NOVA-X')
+            ->assertJsonPath('data.items.0.product_sku', 'PZ-FIREHOUSE-PEP')
             ->assertJsonPath('data.status', 'placed');
 
         $this->assertDatabaseCount('cart_items', 0);
         $this->assertDatabaseHas('orders', [
             'user_id' => $user->id,
             'customer_email' => 'checkout@example.com',
-        ]);
-        $this->assertDatabaseHas('products', [
-            'id' => $product->id,
-            'stock' => 16,
         ]);
     }
 

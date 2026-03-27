@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\AppSetting;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +22,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer('*', function ($view): void {
+            if (! Schema::hasTable('app_settings')) {
+                $view->with('siteSettings', collect());
+
+                return;
+            }
+
+            $view->with('siteSettings', AppSetting::pairs());
+        });
     }
 }

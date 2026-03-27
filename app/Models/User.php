@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'email', 'password', 'is_admin'])]
+#[Fillable(['name', 'email', 'password', 'is_admin', 'phone', 'address_line', 'city', 'area', 'postal_code'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -63,5 +63,15 @@ class User extends Authenticatable
             'token_type' => 'Bearer',
             'token_id' => $token->id,
         ];
+    }
+
+    public function defaultAddress(): string
+    {
+        return collect([
+            $this->address_line,
+            $this->city,
+            $this->area,
+            $this->postal_code,
+        ])->filter()->implode(', ');
     }
 }

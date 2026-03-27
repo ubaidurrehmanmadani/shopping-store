@@ -51,8 +51,6 @@ class CartController extends Controller
 
         $newQuantity = ($cartItem->exists ? $cartItem->quantity : 0) + $validated['quantity'];
 
-        abort_if($product->stock < $newQuantity, 422, 'Requested quantity exceeds available stock.');
-
         $cartItem->fill([
             'quantity' => $newQuantity,
             'unit_price' => $product->currentPrice(),
@@ -71,8 +69,6 @@ class CartController extends Controller
         $validated = $request->validate([
             'quantity' => ['required', 'integer', 'min:1'],
         ]);
-
-        abort_if($cartItem->product->stock < $validated['quantity'], 422, 'Requested quantity exceeds available stock.');
 
         $cartItem->update([
             'quantity' => $validated['quantity'],
