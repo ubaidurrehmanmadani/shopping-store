@@ -22,6 +22,10 @@ The project now includes three surfaces in one Laravel app:
 2. Admin web panel
 3. Mobile-ready API
 
+There is now also a starter Flutter customer app scaffold in:
+
+- [mobile-app](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/mobile-app)
+
 Current business theme:
 
 - Fast food / quick service restaurant
@@ -32,6 +36,7 @@ Current business theme:
 
 - Web routes: [routes/web.php](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/routes/web.php)
 - API routes: [routes/api.php](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/routes/api.php)
+- Flutter starter app: [mobile-app](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/mobile-app)
 - API controllers: [app/Http/Controllers/Api](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/app/Http/Controllers/Api)
 - Web controllers: [app/Http/Controllers/Web](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/app/Http/Controllers/Web)
 - Models: [app/Models](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/app/Models)
@@ -209,6 +214,50 @@ Order statuses currently used:
 - `cancelled`
 
 ## Authentication Model
+
+## Flutter Starter App
+
+Location:
+
+- [mobile-app](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/mobile-app)
+
+Purpose:
+
+- Separate customer mobile app for Android and iOS
+- Uses the Laravel API, not Blade views
+- Intended next step after backend/web completion
+
+Current status:
+
+- Manual starter structure created
+- Native `android/` and `ios/` folders are not yet generated in-repo because Flutter SDK was not installed in the working environment at the time of creation
+- Once Flutter is installed locally, run:
+
+```bash
+cd /Applications/XAMPP/xamppfiles/htdocs/shop-backend/mobile-app
+flutter create . --platforms=android,ios
+flutter pub get
+```
+
+Current configured API base URL:
+
+- `https://shopping-store-main-wyjfa6.free.laravel.cloud/api/v1`
+
+Starter files:
+
+- [mobile-app/lib/main.dart](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/mobile-app/lib/main.dart)
+- [mobile-app/lib/app/app.dart](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/mobile-app/lib/app/app.dart)
+- [mobile-app/lib/core/config/app_config.dart](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/mobile-app/lib/core/config/app_config.dart)
+- [mobile-app/lib/features/home/presentation/home_page.dart](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/mobile-app/lib/features/home/presentation/home_page.dart)
+- [mobile-app/lib/features/menu/data/menu_api_service.dart](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/mobile-app/lib/features/menu/data/menu_api_service.dart)
+- [mobile-app/SETUP_GUIDE.md](/Applications/XAMPP/xamppfiles/htdocs/shop-backend/mobile-app/SETUP_GUIDE.md)
+
+Starter structure:
+
+- `app/`: app entry and routing shell
+- `core/`: global config and theme
+- `features/`: feature-based modules such as auth, home, menu, cart, and profile
+- `shared/`: reusable UI pieces
 
 ## Web Auth
 
