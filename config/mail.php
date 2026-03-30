@@ -9,7 +9,7 @@ $hasSmtpCredentials = filled($mailUsername)
     && $mailPassword !== 'your_mailtrap_password';
 $defaultMailer = $hasSmtpCredentials
     ? (filled($configuredMailer) && $configuredMailer !== 'mail' ? $configuredMailer : 'smtp')
-    : (filled($configuredMailer) && ! in_array($configuredMailer, ['smtp', 'log'], true) ? $configuredMailer : 'mail');
+    : (filled($configuredMailer) && ! in_array($configuredMailer, ['smtp', 'log', 'mail'], true) ? $configuredMailer : 'log');
 
 return [
 
@@ -58,10 +58,6 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
-        ],
-
-        'mail' => [
-            'transport' => 'mail',
         ],
 
         'ses' => [
