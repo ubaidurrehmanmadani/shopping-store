@@ -121,6 +121,14 @@ class CartController extends Controller
                 ->with('success', 'Please login or sign up to continue to checkout.');
         }
 
+        if (! $request->user()->hasVerifiedEmail()) {
+            $request->session()->put('url.intended', route('store.checkout'));
+
+            return redirect()
+                ->route('verification.notice')
+                ->with('success', 'Please verify your email before checkout.');
+        }
+
         $user = $request->user();
 
         return view('store.checkout', [

@@ -1,5 +1,16 @@
 <?php
 
+$configuredMailer = env('MAIL_MAILER');
+$mailUsername = env('MAIL_USERNAME');
+$mailPassword = env('MAIL_PASSWORD');
+$hasSmtpCredentials = filled($mailUsername)
+    && filled($mailPassword)
+    && $mailUsername !== 'your_mailtrap_username'
+    && $mailPassword !== 'your_mailtrap_password';
+$defaultMailer = $hasSmtpCredentials
+    ? (filled($configuredMailer) && $configuredMailer !== 'mail' ? $configuredMailer : 'smtp')
+    : (filled($configuredMailer) && ! in_array($configuredMailer, ['smtp', 'log'], true) ? $configuredMailer : 'mail');
+
 return [
 
     /*
@@ -14,7 +25,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    'default' => $defaultMailer,
 
     /*
     |--------------------------------------------------------------------------
@@ -47,6 +58,10 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+        ],
+
+        'mail' => [
+            'transport' => 'mail',
         ],
 
         'ses' => [

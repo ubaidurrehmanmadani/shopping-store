@@ -6,14 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\User;
 use App\Support\Currency;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthController extends Controller
 {
+    private const PHONE_COUNTRY_CODES = [
+        '+44' => 'United Kingdom (+44)',
+        '+1' => 'United States / Canada (+1)',
+        '+353' => 'Ireland (+353)',
+        '+61' => 'Australia (+61)',
+        '+971' => 'United Arab Emirates (+971)',
+        '+92' => 'Pakistan (+92)',
+    ];
+
     public function showLogin(): View
     {
         return view('auth.login');
@@ -46,7 +57,9 @@ class AuthController extends Controller
 
     public function showRegister(): View
     {
-        return view('auth.register');
+        return view('auth.register', [
+            'phoneCountryCodes' => self::PHONE_COUNTRY_CODES,
+        ]);
     }
 
     public function register(Request $request): RedirectResponse
@@ -54,16 +67,25 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone_country_code' => ['required', 'string', Rule::in(array_keys(self::PHONE_COUNTRY_CODES))],
+            'phone_number' => ['required', 'string', 'max:32', 'regex:/^[0-9][0-9\s\-()]{5,31}$/'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $user = User::query()->create($validated);
+        $user = User::query()->create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => trim($validated['phone_country_code'].' '.$validated['phone_number']),
+            'password' => $validated['password'],
+            'email_verified_at' => null,
+        ]);
 
         Auth::login($user);
         $request->session()->regenerate();
         $this->mergeGuestCart($request, $user);
+        $user->sendEmailVerificationNotification();
 
-        return redirect()->intended(route('store.home'))->with('success', 'Your account is ready.');
+        return redirect()->route('verification.notice')->with('success', 'Account created. Please verify your email before checkout.');
     }
 
     public function logout(Request $request): RedirectResponse
@@ -74,6 +96,35 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('store.home')->with('success', 'You have been signed out.');
+    }
+
+    public function showVerifyNotice(Request $request): View|RedirectResponse
+    {
+        if ($request->user()?->hasVerifiedEmail()) {
+            return redirect()->route('store.home');
+        }
+
+        return view('auth.verify-email');
+    }
+
+    public function verifyEmail(EmailVerificationRequest $request): RedirectResponse
+    {
+        if (! $request->user()->hasVerifiedEmail()) {
+            $request->fulfill();
+        }
+
+        return redirect()->intended(route('store.home'))->with('success', 'Email verified successfully.');
+    }
+
+    public function sendVerificationNotification(Request $request): RedirectResponse
+    {
+        if ($request->user()?->hasVerifiedEmail()) {
+            return redirect()->route('store.home');
+        }
+
+        $request->user()?->sendEmailVerificationNotification();
+
+        return back()->with('success', 'A new verification email has been sent.');
     }
 
     private function mergeGuestCart(Request $request, ?User $user): void

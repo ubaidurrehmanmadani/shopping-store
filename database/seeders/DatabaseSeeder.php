@@ -59,6 +59,7 @@ class DatabaseSeeder extends Seeder
                 [
                     'name' => $user['name'],
                     'phone' => $user['phone'],
+                    'email_verified_at' => now(),
                     'address_line' => $user['address_line'],
                     'city' => $user['city'],
                     'area' => $user['area'],

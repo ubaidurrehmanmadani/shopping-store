@@ -5,8 +5,10 @@ namespace Tests\Feature;
 use App\Models\AppSetting;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -37,6 +39,31 @@ class WebAppTest extends TestCase
             ->assertOk()
             ->assertSee('Rs16.99', false)
             ->assertDontSee('$16.99', false);
+    }
+
+    public function test_register_sends_email_verification_and_stores_phone_number(): void
+    {
+        Notification::fake();
+
+        $csrfToken = 'register-token';
+
+        $this->withSession(['_token' => $csrfToken])
+            ->post('/register', [
+                '_token' => $csrfToken,
+                'name' => 'New Customer',
+                'email' => 'newcustomer@example.com',
+                'phone_country_code' => '+44',
+                'phone_number' => '7123 456789',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+            ])
+            ->assertRedirect(route('verification.notice'));
+
+        $user = User::query()->where('email', 'newcustomer@example.com')->firstOrFail();
+
+        $this->assertSame('+44 7123 456789', $user->phone);
+        $this->assertNull($user->email_verified_at);
+        Notification::assertSentTo($user, VerifyEmail::class);
     }
 
     public function test_admin_user_can_open_dashboard(): void
@@ -110,6 +137,27 @@ class WebAppTest extends TestCase
             'guest_cart' => [$product->id => 1],
         ])->get('/checkout')
             ->assertRedirect(route('login'));
+    }
+
+    public function test_unverified_user_is_prompted_to_verify_email_before_checkout(): void
+    {
+        $this->seed();
+
+        $user = User::factory()->unverified()->create();
+        $product = Product::query()->where('sku', 'PZ-FIREHOUSE-PEP')->firstOrFail();
+        $csrfToken = 'unverified-checkout-token';
+
+        $this->actingAs($user)
+            ->withSession(['_token' => $csrfToken])
+            ->post('/cart', [
+                '_token' => $csrfToken,
+                'product_id' => $product->id,
+                'quantity' => 1,
+            ]);
+
+        $this->actingAs($user)
+            ->get('/checkout')
+            ->assertRedirect(route('verification.notice'));
     }
 
     public function test_guest_cart_merges_after_login(): void

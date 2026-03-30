@@ -24,6 +24,13 @@ Route::middleware('guest')->group(function (): void {
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+Route::get('/email/verify', [AuthController::class, 'showVerifyNotice'])->middleware('auth')->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+    ->middleware(['auth', 'signed', 'throttle:6,1'])
+    ->name('verification.verify');
+Route::post('/email/verification-notification', [AuthController::class, 'sendVerificationNotification'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.send');
 
 Route::get('/cart', [CartController::class, 'index'])->name('store.cart.index');
 Route::post('/cart', [CartController::class, 'store'])->name('store.cart.store');
@@ -32,7 +39,7 @@ Route::delete('/cart/{product}', [CartController::class, 'destroy'])->name('stor
 Route::get('/checkout', [CartController::class, 'checkout'])->name('store.checkout');
 
 Route::middleware('auth')->group(function (): void {
-    Route::post('/checkout', [CartController::class, 'placeOrder'])->name('store.checkout.store');
+    Route::post('/checkout', [CartController::class, 'placeOrder'])->middleware('verified')->name('store.checkout.store');
     Route::get('/orders', [OrderController::class, 'index'])->name('store.orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('store.orders.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('store.profile.edit');
