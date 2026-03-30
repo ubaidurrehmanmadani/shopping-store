@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Currency;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -29,6 +30,10 @@ class AppSetting extends Model
                 ['key' => $key],
                 ['value' => $value]
             );
+        }
+
+        if (array_key_exists('site_currency', $values)) {
+            Currency::flush();
         }
     }
 }

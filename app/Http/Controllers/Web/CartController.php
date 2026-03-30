@@ -6,16 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\CheckoutService;
 use App\Support\Currency;
+use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\View\View;
 
 class CartController extends Controller
 {
     private const GUEST_CART_KEY = 'guest_cart';
 
-    public function index(Request $request): View
+    public function index(Request $request): ViewContract
     {
         $cartItems = $this->cartItems($request);
 
@@ -105,7 +105,7 @@ class CartController extends Controller
         return redirect()->route('store.cart.index')->with('success', 'Item removed from cart.');
     }
 
-    public function checkout(Request $request): View
+    public function checkout(Request $request): ViewContract|RedirectResponse
     {
         $cartItems = $this->cartItems($request);
 
