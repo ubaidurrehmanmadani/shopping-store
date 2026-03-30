@@ -76,6 +76,67 @@ class WebAppTest extends TestCase
             ->assertSee('Firehouse Pepperoni Pizza');
     }
 
+    public function test_guest_can_add_product_to_cart_and_view_cart(): void
+    {
+        $this->seed();
+
+        $product = Product::query()->where('sku', 'PZ-FIREHOUSE-PEP')->firstOrFail();
+        $csrfToken = 'guest-cart-token';
+
+        $this->withSession(['_token' => $csrfToken])
+            ->post('/cart', [
+                '_token' => $csrfToken,
+                'product_id' => $product->id,
+                'quantity' => 2,
+            ])
+            ->assertRedirect(route('store.cart.index'));
+
+        $this->withSession([
+            'guest_cart' => [$product->id => 2],
+        ])->get('/cart')
+            ->assertOk()
+            ->assertSee('Firehouse Pepperoni Pizza')
+            ->assertSee('Continue to checkout')
+            ->assertSee('Login or sign up is only required at checkout.');
+    }
+
+    public function test_guest_is_prompted_to_login_before_checkout(): void
+    {
+        $this->seed();
+
+        $product = Product::query()->where('sku', 'PZ-FIREHOUSE-PEP')->firstOrFail();
+
+        $this->withSession([
+            'guest_cart' => [$product->id => 1],
+        ])->get('/checkout')
+            ->assertRedirect(route('login'));
+    }
+
+    public function test_guest_cart_merges_after_login(): void
+    {
+        $this->seed();
+
+        $user = User::query()->where('email', 'customer@example.com')->firstOrFail();
+        $product = Product::query()->where('sku', 'PZ-FIREHOUSE-PEP')->firstOrFail();
+        $csrfToken = 'guest-login-merge-token';
+
+        $this->withSession([
+            '_token' => $csrfToken,
+            'guest_cart' => [$product->id => 2],
+            'url.intended' => route('store.checkout'),
+        ])->post('/login', [
+            '_token' => $csrfToken,
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertRedirect(route('store.checkout'));
+
+        $this->assertDatabaseHas('cart_items', [
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+            'quantity' => 2,
+        ]);
+    }
+
     public function test_customer_can_update_saved_profile_address(): void
     {
         $this->seed();

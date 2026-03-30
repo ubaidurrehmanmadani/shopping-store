@@ -29,5 +29,11 @@
             </label>
             <button type="submit" class="button">Login</button>
         </form>
+
+        <p style="margin-top: 18px;">
+            New here?
+            <a href="{{ route('register') }}" style="color: var(--brand-dark); font-weight: 700;">Create an account</a>
+            to continue to checkout.
+        </p>
     </div>
 @endsection

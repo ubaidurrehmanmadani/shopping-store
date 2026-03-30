@@ -8,9 +8,7 @@
             <p>{{ $category->description }}</p>
             <div class="actions-row">
                 <a href="{{ route('store.home') }}" class="button light">Back to menu</a>
-                @auth
-                    <a href="{{ route('store.cart.index') }}" class="button light">Open cart</a>
-                @endif
+                <a href="{{ route('store.cart.index') }}" class="button light">Open cart</a>
             </div>
         </div>
         <div class="hero-side">
@@ -44,16 +42,12 @@
                         <div class="meta">{{ $product->short_description }}</div>
                         <div class="actions-row" style="justify-content: space-between;">
                             <span class="price">{{ $product->formattedCurrentPrice() }}</span>
-                            @auth
-                                <form method="POST" action="{{ route('store.cart.store') }}" class="inline">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="button">Add</button>
-                                </form>
-                            @else
-                                <a href="{{ route('login') }}" class="button secondary">Login</a>
-                            @endauth
+                            <form method="POST" action="{{ route('store.cart.store') }}" class="inline">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="button">Add</button>
+                            </form>
                         </div>
                     </div>
                 </article>

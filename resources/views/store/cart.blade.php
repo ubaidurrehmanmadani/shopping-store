@@ -13,6 +13,9 @@
             <div class="empty">
                 <h3>Your bag is empty.</h3>
                 <p>Browse the menu and add your first meal.</p>
+                <div class="actions-row" style="justify-content: center; margin-top: 18px;">
+                    <a href="{{ route('store.home') }}" class="button secondary">Continue shopping</a>
+                </div>
             </div>
         @else
             <div class="split">
@@ -34,7 +37,7 @@
                                         <div class="meta">{{ $item->product->category->name }}</div>
                                     </td>
                                     <td>
-                                        <form method="POST" action="{{ route('store.cart.update', $item) }}" class="stack">
+                                        <form method="POST" action="{{ route('store.cart.update', $item->product) }}" class="stack">
                                             @csrf
                                             @method('PATCH')
                                             <input type="number" name="quantity" value="{{ $item->quantity }}" min="1">
@@ -43,7 +46,7 @@
                                     </td>
                                     <td>{{ \App\Support\Currency::format($item->unit_price * $item->quantity, $item->currency) }}</td>
                                     <td>
-                                        <form method="POST" action="{{ route('store.cart.destroy', $item) }}">
+                                        <form method="POST" action="{{ route('store.cart.destroy', $item->product) }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="button secondary">Remove</button>
@@ -59,6 +62,10 @@
                     <h3>Subtotal</h3>
                     <div class="price">{{ \App\Support\Currency::format($subtotal, $cartItems->first()?->currency) }}</div>
                     <p>{{ $cartItems->sum('quantity') }} items ready for checkout across {{ $cartItems->count() }} menu lines.</p>
+                    @if ($requiresAuthForCheckout)
+                        <p class="meta">You can build your cart first. Login or sign up is only required at checkout.</p>
+                    @endif
+                    <a href="{{ route('store.home') }}" class="button secondary">Continue shopping</a>
                     <a href="{{ route('store.checkout') }}" class="button">Continue to checkout</a>
                 </div>
             </div>

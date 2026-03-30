@@ -25,12 +25,13 @@ Route::middleware('guest')->group(function (): void {
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
+Route::get('/cart', [CartController::class, 'index'])->name('store.cart.index');
+Route::post('/cart', [CartController::class, 'store'])->name('store.cart.store');
+Route::patch('/cart/{product}', [CartController::class, 'update'])->name('store.cart.update');
+Route::delete('/cart/{product}', [CartController::class, 'destroy'])->name('store.cart.destroy');
+Route::get('/checkout', [CartController::class, 'checkout'])->name('store.checkout');
+
 Route::middleware('auth')->group(function (): void {
-    Route::get('/cart', [CartController::class, 'index'])->name('store.cart.index');
-    Route::post('/cart', [CartController::class, 'store'])->name('store.cart.store');
-    Route::patch('/cart/{cartItem}', [CartController::class, 'update'])->name('store.cart.update');
-    Route::delete('/cart/{cartItem}', [CartController::class, 'destroy'])->name('store.cart.destroy');
-    Route::get('/checkout', [CartController::class, 'checkout'])->name('store.checkout');
     Route::post('/checkout', [CartController::class, 'placeOrder'])->name('store.checkout.store');
     Route::get('/orders', [OrderController::class, 'index'])->name('store.orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('store.orders.show');

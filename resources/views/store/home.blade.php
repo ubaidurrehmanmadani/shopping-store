@@ -65,9 +65,7 @@
                 <div class="eyebrow">Best sellers</div>
                 <h2>Featured menu items everyone orders first</h2>
             </div>
-            @auth
-                <a href="{{ route('store.cart.index') }}" class="button light">Open cart</a>
-            @endauth
+            <a href="{{ route('store.cart.index') }}" class="button light">Open cart</a>
         </div>
 
         <div class="grid">
@@ -88,16 +86,12 @@
                                 <span class="strike">{{ $product->formattedOriginalPrice() }}</span>
                             @endif
                         </div>
-                        @auth
-                            <form method="POST" action="{{ route('store.cart.store') }}" class="stack">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="button">Add to cart</button>
-                            </form>
-                        @else
-                            <a href="{{ route('login') }}" class="button secondary">Login to order</a>
-                        @endauth
+                        <form method="POST" action="{{ route('store.cart.store') }}" class="stack">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="button">Add to cart</button>
+                        </form>
                     </div>
                 </article>
             @endforeach
@@ -126,16 +120,12 @@
                         <div class="meta">{{ $product->short_description }}</div>
                         <div class="actions-row" style="justify-content: space-between;">
                             <span class="price">{{ $product->formattedCurrentPrice() }}</span>
-                            @auth
-                                <form method="POST" action="{{ route('store.cart.store') }}" class="inline">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="button">Add</button>
-                                </form>
-                            @else
-                                <a href="{{ route('login') }}" class="button secondary">Login</a>
-                            @endauth
+                            <form method="POST" action="{{ route('store.cart.store') }}" class="inline">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="button">Add</button>
+                            </form>
                         </div>
                     </div>
                 </article>

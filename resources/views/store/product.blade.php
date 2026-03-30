@@ -19,19 +19,15 @@
             </div>
             <div class="meta" style="color: rgba(255,255,255,0.82);">Kitchen favorite · Prepared fresh to order · SKU {{ $product->sku }}</div>
 
-            @auth
-                <form method="POST" action="{{ route('store.cart.store') }}" class="stack">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <label style="color: white;">
-                        Quantity
-                        <input type="number" name="quantity" value="1" min="1">
-                    </label>
-                    <button type="submit" class="button">Add to cart</button>
-                </form>
-            @else
-                <a href="{{ route('login') }}" class="button light">Login to order</a>
-            @endauth
+            <form method="POST" action="{{ route('store.cart.store') }}" class="stack">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <label style="color: white;">
+                    Quantity
+                    <input type="number" name="quantity" value="1" min="1">
+                </label>
+                <button type="submit" class="button">Add to cart</button>
+            </form>
         </div>
     </section>
 
@@ -56,16 +52,12 @@
                         <div class="meta">{{ $relatedProduct->short_description }}</div>
                         <div class="actions-row" style="justify-content: space-between;">
                             <span class="price">{{ $relatedProduct->formattedCurrentPrice() }}</span>
-                            @auth
-                                <form method="POST" action="{{ route('store.cart.store') }}" class="inline">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $relatedProduct->id }}">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="button">Add</button>
-                                </form>
-                            @else
-                                <a href="{{ route('login') }}" class="button secondary">Login</a>
-                            @endauth
+                            <form method="POST" action="{{ route('store.cart.store') }}" class="inline">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $relatedProduct->id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="button">Add</button>
+                            </form>
                         </div>
                     </div>
                 </article>
