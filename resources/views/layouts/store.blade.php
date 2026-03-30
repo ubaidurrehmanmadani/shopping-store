@@ -24,15 +24,26 @@
             }
 
             * { box-sizing: border-box; }
-            html { scroll-behavior: smooth; }
+            html {
+                scroll-behavior: smooth;
+                min-height: 100%;
+                background:
+                    radial-gradient(circle at top right, rgba(244, 93, 34, 0.18), transparent 28%),
+                    radial-gradient(circle at 20% 0%, rgba(255, 207, 68, 0.12), transparent 24%),
+                    linear-gradient(180deg, #2e1710 0%, #170d09 100%);
+                background-color: #170d09;
+            }
             body {
                 margin: 0;
+                min-height: 100vh;
                 font-family: "Trebuchet MS", "Segoe UI", sans-serif;
                 color: var(--paper);
                 background:
                     radial-gradient(circle at top right, rgba(244, 93, 34, 0.18), transparent 28%),
                     radial-gradient(circle at 20% 0%, rgba(255, 207, 68, 0.12), transparent 24%),
                     linear-gradient(180deg, #2e1710 0%, #170d09 100%);
+                background-color: #170d09;
+                background-attachment: fixed;
             }
 
             a { color: inherit; text-decoration: none; }
@@ -44,6 +55,7 @@
                 position: sticky;
                 top: 0;
                 z-index: 50;
+                -webkit-backdrop-filter: blur(18px);
                 backdrop-filter: blur(18px);
                 background: rgba(27, 15, 11, 0.78);
                 border-bottom: 1px solid rgba(255,255,255,0.08);

@@ -40,10 +40,6 @@
         Sale price
         <input type="number" step="0.01" min="0" name="sale_price" value="{{ old('sale_price', $product->sale_price) }}">
     </label>
-    <label>
-        Currency
-        <input type="text" name="currency" value="{{ old('currency', $product->currency ?: 'USD') }}" required>
-    </label>
     <label class="span-2">
         Product image
         <input type="file" name="image" accept="image/*">

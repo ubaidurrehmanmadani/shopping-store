@@ -24,7 +24,7 @@
                             <td>{{ $order->number }}</td>
                             <td><span class="badge">{{ ucfirst($order->status) }}</span></td>
                             <td>{{ $order->items_count }}</td>
-                            <td>${{ number_format((float) $order->subtotal, 2) }}</td>
+                            <td>{{ \App\Support\Currency::format($order->subtotal, $order->currency) }}</td>
                             <td><a href="{{ route('store.orders.show', $order) }}" class="button secondary">Open</a></td>
                         </tr>
                     @empty

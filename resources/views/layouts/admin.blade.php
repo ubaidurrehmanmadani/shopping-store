@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ $title ?? 'Admin Panel' }}</title>
+        @stack('styles')
         <style>
             :root {
                 --bg: #0e1720;
@@ -170,5 +171,6 @@
                 @yield('content')
             </div>
         </div>
+        @stack('scripts')
     </body>
 </html>

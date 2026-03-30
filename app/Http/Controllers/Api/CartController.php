@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Support\Currency;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -30,7 +31,7 @@ class CartController extends Controller
                         '.',
                         ''
                     ),
-                    'currency' => $cartItems->first()?->currency ?? 'USD',
+                    'currency' => $cartItems->first()?->currency ?? Currency::currentCode(),
                 ],
             ],
         ]);
@@ -54,7 +55,7 @@ class CartController extends Controller
         $cartItem->fill([
             'quantity' => $newQuantity,
             'unit_price' => $product->currentPrice(),
-            'currency' => $product->currency,
+            'currency' => Currency::currentCode(),
         ])->save();
 
         return response()->json([
@@ -73,7 +74,7 @@ class CartController extends Controller
         $cartItem->update([
             'quantity' => $validated['quantity'],
             'unit_price' => $cartItem->product->currentPrice(),
-            'currency' => $cartItem->product->currency,
+            'currency' => Currency::currentCode(),
         ]);
 
         return response()->json([

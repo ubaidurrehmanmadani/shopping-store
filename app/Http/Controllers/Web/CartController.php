@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Support\Currency;
 use App\Services\CheckoutService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -49,7 +50,7 @@ class CartController extends Controller
         $cartItem->fill([
             'quantity' => $newQuantity,
             'unit_price' => $product->currentPrice(),
-            'currency' => $product->currency,
+            'currency' => Currency::currentCode(),
         ])->save();
 
         return redirect()->route('store.cart.index')->with('success', "{$product->name} added to cart.");
@@ -66,7 +67,7 @@ class CartController extends Controller
         $cartItem->update([
             'quantity' => $validated['quantity'],
             'unit_price' => $cartItem->product->currentPrice(),
-            'currency' => $cartItem->product->currency,
+            'currency' => Currency::currentCode(),
         ]);
 
         return redirect()->route('store.cart.index')->with('success', 'Cart updated.');

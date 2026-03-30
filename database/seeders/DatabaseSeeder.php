@@ -75,6 +75,7 @@ class DatabaseSeeder extends Seeder
             'contact_phone' => '+1 555 RUSHBITE',
             'contact_email' => 'hello@rushbite.test',
             'contact_address' => '21 Flavor Street, Downtown Food District',
+            'site_currency' => 'USD',
             'site_logo_path' => null,
         ]);
 

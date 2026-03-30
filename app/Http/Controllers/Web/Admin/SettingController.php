@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppSetting;
+use App\Support\Currency;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -26,6 +27,7 @@ class SettingController extends Controller
             'contact_phone' => ['nullable', 'string', 'max:255'],
             'contact_email' => ['nullable', 'email', 'max:255'],
             'contact_address' => ['nullable', 'string', 'max:2000'],
+            'site_currency' => ['required', 'string', 'size:3', \Illuminate\Validation\Rule::in(array_keys(config('currencies')))],
             'logo' => ['nullable', 'image', 'max:5120'],
         ]);
 
@@ -46,8 +48,11 @@ class SettingController extends Controller
             'contact_phone' => $validated['contact_phone'] ?? null,
             'contact_email' => $validated['contact_email'] ?? null,
             'contact_address' => $validated['contact_address'] ?? null,
+            'site_currency' => strtoupper($validated['site_currency']),
             'site_logo_path' => $logoPath,
         ]);
+
+        Currency::flush();
 
         return redirect()->route('admin.settings.edit')->with('success', 'Brand settings updated.');
     }

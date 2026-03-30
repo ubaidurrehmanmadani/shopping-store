@@ -28,7 +28,7 @@
                             <div class="meta">{{ $product->sku }}</div>
                         </td>
                         <td>{{ $product->category?->name }}</td>
-                        <td>${{ number_format((float) $product->currentPrice(), 2) }}</td>
+                        <td>{{ $product->formattedCurrentPrice() }}</td>
                         <td>
                             @if ($product->is_featured)
                                 <span class="badge warn">Featured</span>

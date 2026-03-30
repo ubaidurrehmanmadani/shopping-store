@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\AppSetting;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,6 +23,20 @@ class WebAppTest extends TestCase
             ->assertSee('RushBite')
             ->assertSee('Featured menu items')
             ->assertSee('Firehouse Pepperoni Pizza');
+    }
+
+    public function test_storefront_renders_selected_product_currency(): void
+    {
+        $this->seed();
+
+        AppSetting::storeMany([
+            'site_currency' => 'PKR',
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Rs16.99', false)
+            ->assertDontSee('$16.99', false);
     }
 
     public function test_admin_user_can_open_dashboard(): void
@@ -144,7 +159,6 @@ class WebAppTest extends TestCase
                 'sku' => 'UP-IMAGE-001',
                 'price' => 49.99,
                 'sale_price' => 39.99,
-                'currency' => 'USD',
                 'is_active' => '1',
                 'is_featured' => '0',
                 'image' => UploadedFile::fake()->image('product-cover.jpg'),
@@ -179,7 +193,6 @@ class WebAppTest extends TestCase
                 'sku' => $product->sku,
                 'price' => $product->price,
                 'sale_price' => $product->sale_price,
-                'currency' => $product->currency,
                 'is_active' => '1',
                 'is_featured' => $product->is_featured ? '1' : '0',
                 'image' => UploadedFile::fake()->image('replacement-cover.jpg'),
@@ -210,6 +223,7 @@ class WebAppTest extends TestCase
                 'contact_phone' => '+1 999 888 7777',
                 'contact_email' => 'admin@burgerburst.test',
                 'contact_address' => '11 Burger Avenue',
+                'site_currency' => 'GBP',
                 'logo' => UploadedFile::fake()->image('brand-logo.png'),
             ])
             ->assertRedirect(route('admin.settings.edit'));
@@ -217,6 +231,7 @@ class WebAppTest extends TestCase
         $this->actingAs($admin)
             ->get('/')
             ->assertOk()
-            ->assertSee('BurgerBurst');
+            ->assertSee('BurgerBurst')
+            ->assertSee('£16.99', false);
     }
 }

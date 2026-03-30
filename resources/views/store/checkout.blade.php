@@ -94,13 +94,13 @@
             </div>
             <div class="panel">
                 <div class="eyebrow">Order summary</div>
-                <h3>${{ $subtotal }}</h3>
+                <h3>{{ \App\Support\Currency::format($subtotal, $cartItems->first()?->currency) }}</h3>
                 <table>
                     <tbody>
                         @foreach ($cartItems as $item)
                             <tr>
                                 <td>{{ $item->product->name }} × {{ $item->quantity }}</td>
-                                <td>${{ number_format((float) $item->unit_price * $item->quantity, 2) }}</td>
+                                <td>{{ \App\Support\Currency::format($item->unit_price * $item->quantity, $item->currency) }}</td>
                             </tr>
                         @endforeach
                     </tbody>

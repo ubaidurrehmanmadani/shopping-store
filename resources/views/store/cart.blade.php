@@ -41,7 +41,7 @@
                                             <button type="submit" class="button secondary">Update</button>
                                         </form>
                                     </td>
-                                    <td>${{ number_format((float) $item->unit_price * $item->quantity, 2) }}</td>
+                                    <td>{{ \App\Support\Currency::format($item->unit_price * $item->quantity, $item->currency) }}</td>
                                     <td>
                                         <form method="POST" action="{{ route('store.cart.destroy', $item) }}">
                                             @csrf
@@ -57,7 +57,7 @@
                 <div class="panel stack">
                     <div class="eyebrow">Checkout summary</div>
                     <h3>Subtotal</h3>
-                    <div class="price">${{ $subtotal }}</div>
+                    <div class="price">{{ \App\Support\Currency::format($subtotal, $cartItems->first()?->currency) }}</div>
                     <p>{{ $cartItems->sum('quantity') }} items ready for checkout across {{ $cartItems->count() }} menu lines.</p>
                     <a href="{{ route('store.checkout') }}" class="button">Continue to checkout</a>
                 </div>

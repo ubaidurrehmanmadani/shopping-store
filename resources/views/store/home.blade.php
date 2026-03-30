@@ -83,9 +83,9 @@
                         <h3><a href="{{ route('store.products.show', $product) }}">{{ $product->name }}</a></h3>
                         <div class="meta">{{ $product->short_description }}</div>
                         <div>
-                            <span class="price">${{ number_format((float) $product->currentPrice(), 2) }}</span>
+                            <span class="price">{{ $product->formattedCurrentPrice() }}</span>
                             @if ($product->sale_price)
-                                <span class="strike">${{ number_format((float) $product->price, 2) }}</span>
+                                <span class="strike">{{ $product->formattedOriginalPrice() }}</span>
                             @endif
                         </div>
                         @auth
@@ -125,7 +125,7 @@
                         <h3><a href="{{ route('store.products.show', $product) }}">{{ $product->name }}</a></h3>
                         <div class="meta">{{ $product->short_description }}</div>
                         <div class="actions-row" style="justify-content: space-between;">
-                            <span class="price">${{ number_format((float) $product->currentPrice(), 2) }}</span>
+                            <span class="price">{{ $product->formattedCurrentPrice() }}</span>
                             @auth
                                 <form method="POST" action="{{ route('store.cart.store') }}" class="inline">
                                     @csrf

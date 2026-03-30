@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Currency;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,6 +45,21 @@ class Product extends Model
     public function currentPrice(): string
     {
         return (string) ($this->sale_price ?? $this->price);
+    }
+
+    public function getCurrencyAttribute(?string $value): string
+    {
+        return Currency::currentCode();
+    }
+
+    public function formattedCurrentPrice(): string
+    {
+        return Currency::format($this->currentPrice(), null);
+    }
+
+    public function formattedOriginalPrice(): string
+    {
+        return Currency::format($this->price, null);
     }
 
     public function getImageSourceAttribute(): ?string

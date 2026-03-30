@@ -12,9 +12,9 @@
             <h1>{{ $product->name }}</h1>
             <p>{{ $product->description ?: $product->short_description }}</p>
             <div>
-                <span class="price" style="color: white; font-size: 1.8rem;">${{ number_format((float) $product->currentPrice(), 2) }}</span>
+                <span class="price" style="color: white; font-size: 1.8rem;">{{ $product->formattedCurrentPrice() }}</span>
                 @if ($product->sale_price)
-                    <span class="strike" style="color: rgba(255,255,255,0.75);">${{ number_format((float) $product->price, 2) }}</span>
+                    <span class="strike" style="color: rgba(255,255,255,0.75);">{{ $product->formattedOriginalPrice() }}</span>
                 @endif
             </div>
             <div class="meta" style="color: rgba(255,255,255,0.82);">Kitchen favorite · Prepared fresh to order · SKU {{ $product->sku }}</div>
@@ -55,7 +55,7 @@
                         <h3><a href="{{ route('store.products.show', $relatedProduct) }}">{{ $relatedProduct->name }}</a></h3>
                         <div class="meta">{{ $relatedProduct->short_description }}</div>
                         <div class="actions-row" style="justify-content: space-between;">
-                            <span class="price">${{ number_format((float) $relatedProduct->currentPrice(), 2) }}</span>
+                            <span class="price">{{ $relatedProduct->formattedCurrentPrice() }}</span>
                             @auth
                                 <form method="POST" action="{{ route('store.cart.store') }}" class="inline">
                                     @csrf

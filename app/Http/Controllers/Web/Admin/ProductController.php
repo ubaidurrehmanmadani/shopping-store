@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\Currency;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -94,14 +95,13 @@ class ProductController extends Controller
             'sku' => ['required', 'string', 'max:255', Rule::unique('products', 'sku')->ignore($product?->id)],
             'price' => ['required', 'numeric', 'min:0'],
             'sale_price' => ['nullable', 'numeric', 'min:0', 'lte:price'],
-            'currency' => ['required', 'string', 'size:3'],
             'is_active' => ['nullable', 'boolean'],
             'is_featured' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'max:5120'],
         ]);
 
         $validated['slug'] = Str::slug($validated['slug'] ?: $validated['name']);
-        $validated['currency'] = strtoupper($validated['currency']);
+        $validated['currency'] = Currency::currentCode();
         $validated['stock'] = $product?->stock ?? 0;
         $validated['is_active'] = $request->boolean('is_active');
         $validated['is_featured'] = $request->boolean('is_featured');

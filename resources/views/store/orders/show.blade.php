@@ -17,12 +17,12 @@
                         @foreach ($order->items as $item)
                             <tr>
                                 <td>{{ $item->product_name }} × {{ $item->quantity }}</td>
-                                <td>${{ number_format((float) $item->line_total, 2) }}</td>
+                                <td>{{ \App\Support\Currency::format($item->line_total, $item->currency) }}</td>
                             </tr>
                         @endforeach
                         <tr>
                             <td><strong>Subtotal</strong></td>
-                            <td><strong>${{ number_format((float) $order->subtotal, 2) }}</strong></td>
+                            <td><strong>{{ \App\Support\Currency::format($order->subtotal, $order->currency) }}</strong></td>
                         </tr>
                     </tbody>
                 </table>
